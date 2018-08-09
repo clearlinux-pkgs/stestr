@@ -4,7 +4,7 @@
 #
 Name     : stestr
 Version  : 2.1.0
-Release  : 1
+Release  : 2
 URL      : https://files.pythonhosted.org/packages/d5/96/5bfe962427b4d373371c9d5a3575ac9a7c20d9813837a8014efc1955a2fd/stestr-2.1.0.tar.gz
 Source0  : https://files.pythonhosted.org/packages/d5/96/5bfe962427b4d373371c9d5a3575ac9a7c20d9813837a8014efc1955a2fd/stestr-2.1.0.tar.gz
 Summary  : A parallel Python test runner built around subunit
@@ -18,6 +18,7 @@ Requires: PyYAML
 Requires: cliff
 Requires: fixtures
 Requires: pbr
+Requires: python-future
 Requires: python-subunit
 Requires: six
 Requires: subunit2sql
@@ -25,7 +26,15 @@ Requires: testtools
 Requires: voluptuous
 BuildRequires : buildreq-distutils3
 BuildRequires : pbr
+BuildRequires : pluggy
+BuildRequires : prettytable
+BuildRequires : py-python
+BuildRequires : pytest
+BuildRequires : python-future
 BuildRequires : subunit2sql
+BuildRequires : tox
+BuildRequires : virtualenv
+Patch1: deps.patch
 
 %description
 ==========================
@@ -67,15 +76,21 @@ python3 components for the stestr package.
 
 %prep
 %setup -q -n stestr-2.1.0
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1533788814
+export SOURCE_DATE_EPOCH=1533821019
 python3 setup.py build -b py3
 
+%check
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost,127.0.0.1,0.0.0.0
+PYTHONPATH=%{buildroot}/usr/lib/python3.7/site-packages python3 setup.py test
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/doc/stestr
