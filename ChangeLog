@@ -1,6 +1,17 @@
 CHANGES
 =======
 
+2.1.1
+-----
+
+* Add support for python 3.7
+* Fix handling of unexpected success results
+* Allow stestr to be called as a module (#185)
+* Add error handling for invalid input regexes
+* Cleanup the manpage section on dealing with failed tests
+* Cleanup argument help text on load command
+* Fix description for the stestr run command
+
 2.1.0
 -----
 
@@ -284,10 +295,6 @@ CHANGES
 * Pivot repo to stestr
 * Release 0.0.20
 * Tests will be reliably tagged with worker-%d
-
-0.0.19
-------
-
 * Release 0.0.19
 * Fix 0 timestamps for enumerated but not run tests
 * Update docs for the move to github
@@ -301,22 +308,10 @@ CHANGES
 * Improve error rendering of listing issues
 * \* When list-tests encounters an error, a much clearer response will   now be shown. (Robert Collins, #1271133)
 * \* \`\`run\`\` was outputting bad MIME types - test/plain, not text/plain.   (Robert Collins)
-
-0.0.18
-------
-
 * Release 0.0.18
 * \* \`\`run\`\` now accepts \`\`--isolated\`\` as a parameter, which will cause each   selected test to be run independently. This can be useful to both workaround   isolation bugs and detect tests that can not be run independently.   (Robert Collins)
 * \* \`\`capture\_ids\`\` in test\_run now returns a list of captures, permitting tests   that need to test multiple runs to do so. (Robert Collins)
-
-0.0.17
-------
-
 * 0.0.17 ++++++
-
-0.0.16
-------
-
 * Release 0.0.16
 * \* When test listing fails, testr will now report an error rather than   incorrectly trying to run zero tests. A test listing failure is detected by   the returncode of the test listing process. (Robert Collins, #1185231)
 * \* A new testr.conf option \`\`group\_regex\`\` can be used for grouping   tests so that they get run in the same backend runner. (Matthew Treinish)
@@ -342,10 +337,6 @@ CHANGES
 * Drop the ExtendedToStream wrapping around UI.make\_result
 * Move tag based test filtering into the UI: many test things won't be filtered, such as slow tests and pdb debugging, so the UI has to see the tests. Moving the responsibility into the UI may lead to repetition in other UI's if not made easy to reuse, but that seems like the lesser of evils for now
 * Simplify commands.failing
-
-0.0.15
-------
-
 * Release 0.0.15, with minimal subunit v2 support
 * Fix subunit v1 parallel test execution
 * Add test for --subunit support - the UI was previously only loosely tested
@@ -360,41 +351,21 @@ CHANGES
 * Use ConcurrentStreamResult always
 * Start getting streamresult into the innards
 * \* Expects subunit v2 if the local library has v2 support in the subunit   library. This should be seamless if the system under test shares the   Python libraries. If it doesn't, either arrange to use \`\`subunit-2to1\`\`   or upgrade the subunit libraries for the system under test.   (Robert Collins)
-
-0.0.14
-------
-
 * Update releasing docs and really release 0.0.14
 * 0.0.14 ++++++
-
-0.0.13
-------
-
 * Release 0.0.13
 * \* \`\`setup.py testr\`\` was not indicating test failures via it's return code.   (Monty Taylor)
 * Actually return from \_run\_testr
-
-0.0.12
-------
-
 * Release 0.0.12
 * \* There is now a setuptools extension provided by \`\`testrespository\`\` making it   easy to invoke testr from setup.py driven workflows.   (Monty Taylor, Robert Collins)
 * \* BSD license file incorrectly claimed copyright by subunit contributors.   (Monty Taylor)
 * Correct a typo in setup.py
 * \* .testr.conf is now shipped in the source distribution to aid folk wanting to   validate that testrepository works correctly on their machine.   (Robert Collins)
 * Add setuptools commands for running testr and coverage
-
-0.0.11
-------
-
 * Release 0.0.11
 * Tweak docs
 * \* Fix another incompatability with Mac OS X - gdbm dbm modules don't support   get. (Robert Collins, #1094330)
 * ReST fixes for docs
-
-0.0.10
-------
-
 * Release 0.0.10
 * \* It's now possible to configure \`\`test\_run\_concurrency\`\` in \`\`.testr.conf\`\`   to have concurrency defined by a callout. (Robert Collins)
 * Update testr help run docs for new options
@@ -408,10 +379,6 @@ CHANGES
 * \* TestCommand is now a fixture. This is used to ensure cached test instances   are disposed of - if using the object to run or list tests, you will need   to adjust your calls. (Robert Collins)
 * \* It's now possible to configure \`\`test\_run\_concurrency\`\` in \`\`.testr.conf\`\`   to have concurrency defined by a callout. (Robert Collins)
 * Document overview
-
-0.0.9
------
-
 * Release 0.0.9
 * \* On OSX the \`\`anydbm\`\` module by default returns an implementation that   doesn't support update(). Workaround that by falling back to a loop.   (Robert Collins, #1091500)
 * Document workaround
@@ -420,10 +387,6 @@ CHANGES
 * \* \`\`testr --analyze-improvements\`\` now honours test regex filters and only   analyzes matching tests. (Robert Collins)
 * Better documentation for setup of .testr.conf
 * Better keywords
-
-0.0.8
------
-
 * Release 0.0.8
 * \* \`\`testr run --analyze-isolation\`\` will search the current failing tests for   spurious failures caused by interactions with other tests.   (Robert Collins, #684069)
 * First, horribly untested, version of --analyze-failures
