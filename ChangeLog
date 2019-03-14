@@ -1,12 +1,28 @@
 CHANGES
 =======
 
+2.2.0
+-----
+
+* Change title of project in readme
+* Add a better description to README Overview section
+* Fix discovery import error formatting on py3
+* Cleanup unused parameters in \_run\_tests
+* Enable doc8
+* Add all stream to repo even if some tests fail
+* Extract loading case code to \_load\_case() function
+* Make test running serially when just loading
+* Fix time measurement for load command too
+* Use reported times instead of wall time in subunit-trace
+* Add support for test class and method by path on no-discover
+
 2.1.1
 -----
 
 * Add support for python 3.7
 * Fix handling of unexpected success results
 * Allow stestr to be called as a module (#185)
+* Make warning and error messages use stderr
 * Add error handling for invalid input regexes
 * Cleanup the manpage section on dealing with failed tests
 * Cleanup argument help text on load command
