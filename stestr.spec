@@ -4,7 +4,7 @@
 #
 Name     : stestr
 Version  : 2.3.1
-Release  : 6
+Release  : 7
 URL      : https://files.pythonhosted.org/packages/16/ac/0d72ab15807a33c6a762de3dd29741f73ece6032ad2b4c0466dfbe86a3f6/stestr-2.3.1.tar.gz
 Source0  : https://files.pythonhosted.org/packages/16/ac/0d72ab15807a33c6a762de3dd29741f73ece6032ad2b4c0466dfbe86a3f6/stestr-2.3.1.tar.gz
 Summary  : A parallel Python test runner built around subunit
@@ -24,6 +24,7 @@ Requires: six
 Requires: subunit2sql
 Requires: testtools
 Requires: voluptuous
+BuildRequires : PyYAML
 BuildRequires : Sphinx
 BuildRequires : Sphinx-python
 BuildRequires : buildreq-distutils3
@@ -33,6 +34,7 @@ BuildRequires : coverage-python
 BuildRequires : ddt
 BuildRequires : ddt-python
 BuildRequires : doc8-python
+BuildRequires : fixtures
 BuildRequires : hacking
 BuildRequires : pbr
 BuildRequires : pluggy
@@ -42,21 +44,21 @@ BuildRequires : pytest
 BuildRequires : python-future
 BuildRequires : python-mock
 BuildRequires : python-mock-python
+BuildRequires : python-subunit
 BuildRequires : restructuredtext_lint-python
+BuildRequires : six
 BuildRequires : stestr
 BuildRequires : subunit2sql
+BuildRequires : testtools
 BuildRequires : tox
 BuildRequires : virtualenv
 BuildRequires : voluptuous
 BuildRequires : voluptuous-python
 Patch1: deps.patch
+Patch2: 0001-Use-yaml.safe_load-instead-of-yaml.load.patch
 
 %description
-stestr
 ======
-.. image:: https://img.shields.io/travis/mtreinish/stestr/master.svg?style=flat-square
-:target: https://travis-ci.org/mtreinish/stestr
-:alt: Build status
 
 %package bin
 Summary: bin components for the stestr package.
@@ -96,14 +98,19 @@ python3 components for the stestr package.
 %prep
 %setup -q -n stestr-2.3.1
 %patch1 -p1
+%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1552575424
-export LDFLAGS="${LDFLAGS} -fno-lto"
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1568191198
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
 export MAKEFLAGS=%{?_smp_mflags}
 python3 setup.py build
 

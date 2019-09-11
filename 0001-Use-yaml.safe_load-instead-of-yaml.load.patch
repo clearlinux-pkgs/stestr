@@ -1,0 +1,140 @@
+From f0c8c1112677367345e9b672ed6716b7b9e4d919 Mon Sep 17 00:00:00 2001
+From: Masayuki Igawa <masayuki@igawa.io>
+Date: Sat, 16 Mar 2019 10:47:47 +0800
+Subject: [PATCH] Use yaml.safe_load instead of yaml.load
+
+yaml.load(input) is deprecated from PyYAML 5.1[0]. Therefore, some
+warnings are showed up in a stestr unit test case which causes a failure
+in test_load_from_stdin_quiet() because it expects empty string.
+
+This commit makes it to use yaml.safe_load instead of yaml.load. Because
+it doesn't show the deprecation warnings.
+
+[0] https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load(input)-Deprecation
+
+Closes: #234
+---
+ stestr/scheduler.py              |  2 +-
+ stestr/tests/test_scheduler.py   | 12 ++++++------
+ stestr/tests/test_user_config.py |  8 +++++---
+ stestr/user_config.py            |  2 +-
+ 4 files changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/stestr/scheduler.py b/stestr/scheduler.py
+index 71a4468..b7c5631 100644
+--- a/stestr/scheduler.py
++++ b/stestr/scheduler.py
+@@ -155,7 +155,7 @@ def generate_worker_partitions(ids, worker_path, repository=None,
+     :returns: A list where each element is a distinct subset of test_ids.
+     """
+     with open(worker_path, 'r') as worker_file:
+-        workers_desc = yaml.load(worker_file.read())
++        workers_desc = yaml.safe_load(worker_file.read())
+     worker_groups = []
+     for worker in workers_desc:
+         if isinstance(worker, dict) and 'worker' in worker.keys():
+diff --git a/stestr/tests/test_scheduler.py b/stestr/tests/test_scheduler.py
+index 2df3593..5959759 100644
+--- a/stestr/tests/test_scheduler.py
++++ b/stestr/tests/test_scheduler.py
+@@ -124,7 +124,7 @@ class TestScheduler(base.TestCase):
+             {'worker': ['test_']},
+             {'worker': ['test']},
+         ]
+-        with mock.patch('yaml.load', return_value=fake_worker_yaml):
++        with mock.patch('yaml.safe_load', return_value=fake_worker_yaml):
+             groups = scheduler.generate_worker_partitions(test_ids, 'fakepath')
+         expected_grouping = [
+             ['test_a', 'test_b'],
+@@ -139,7 +139,7 @@ class TestScheduler(base.TestCase):
+             {'worker': ['test_']},
+             {'worker': 'test'},
+         ]
+-        with mock.patch('yaml.load', return_value=fake_worker_yaml):
++        with mock.patch('yaml.safe_load', return_value=fake_worker_yaml):
+             self.assertRaises(TypeError, scheduler.generate_worker_partitions,
+                               test_ids, 'fakepath')
+ 
+@@ -150,7 +150,7 @@ class TestScheduler(base.TestCase):
+             {'worker-foo': ['test_']},
+             {'worker': ['test']},
+         ]
+-        with mock.patch('yaml.load', return_value=fake_worker_yaml):
++        with mock.patch('yaml.safe_load', return_value=fake_worker_yaml):
+             self.assertRaises(TypeError, scheduler.generate_worker_partitions,
+                               test_ids, 'fakepath')
+ 
+@@ -162,7 +162,7 @@ class TestScheduler(base.TestCase):
+             {'worker': ['test']},
+             {'worker': ['foo']}
+         ]
+-        with mock.patch('yaml.load', return_value=fake_worker_yaml):
++        with mock.patch('yaml.safe_load', return_value=fake_worker_yaml):
+             groups = scheduler.generate_worker_partitions(test_ids, 'fakepath')
+         expected_grouping = [
+             ['test_a', 'test_b'],
+@@ -178,7 +178,7 @@ class TestScheduler(base.TestCase):
+             {'worker': ['test']},
+             {'worker': ['a_thing'], 'concurrency': 2},
+         ]
+-        with mock.patch('yaml.load', return_value=fake_worker_yaml):
++        with mock.patch('yaml.safe_load', return_value=fake_worker_yaml):
+             groups = scheduler.generate_worker_partitions(test_ids, 'fakepath')
+         expected_grouping = [
+             ['test_a', 'test_b'],
+@@ -196,7 +196,7 @@ class TestScheduler(base.TestCase):
+             {'worker': ['test_']},
+             {'worker': ['test'], 'count': 1},
+         ]
+-        with mock.patch('yaml.load', return_value=fake_worker_yaml):
++        with mock.patch('yaml.safe_load', return_value=fake_worker_yaml):
+             groups = scheduler.generate_worker_partitions(test_ids, 'fakepath')
+         expected_grouping = [
+             ['test_a', 'test_b'],
+diff --git a/stestr/tests/test_user_config.py b/stestr/tests/test_user_config.py
+index 2758f76..ef329a2 100644
+--- a/stestr/tests/test_user_config.py
++++ b/stestr/tests/test_user_config.py
+@@ -96,13 +96,14 @@ class TestUserConfig(base.TestCase):
+         user_config.get_user_config()
+         user_mock.assert_called_once_with(self.home_path)
+ 
+-    @mock.patch('yaml.load', return_value={})
++    @mock.patch('yaml.safe_load', return_value={})
+     @mock.patch('six.moves.builtins.open', mock.mock_open())
+     def test_user_config_empty_schema(self, yaml_mock):
+         user_conf = user_config.UserConfig('/path')
+         self.assertEqual({}, user_conf.config)
+ 
+-    @mock.patch('yaml.load', return_value={'init': {'subunit-trace': True}})
++    @mock.patch('yaml.safe_load',
++                return_value={'init': {'subunit-trace': True}})
+     @mock.patch('sys.exit')
+     @mock.patch('six.moves.builtins.open', mock.mock_open())
+     def test_user_config_invalid_command(self, exit_mock, yaml_mock):
+@@ -111,7 +112,8 @@ class TestUserConfig(base.TestCase):
+                         "extra keys not allowed @ data['init']")
+         exit_mock.assert_called_once_with(error_string)
+ 
+-    @mock.patch('yaml.load', return_value={'run': {'subunit-trace': True}})
++    @mock.patch('yaml.safe_load',
++                return_value={'run': {'subunit-trace': True}})
+     @mock.patch('sys.exit')
+     @mock.patch('six.moves.builtins.open', mock.mock_open())
+     def test_user_config_invalid_option(self, exit_mock, yaml_mock):
+diff --git a/stestr/user_config.py b/stestr/user_config.py
+index c54be1b..02ef026 100644
+--- a/stestr/user_config.py
++++ b/stestr/user_config.py
+@@ -66,7 +66,7 @@ class UserConfig(object):
+             }
+         })
+         with open(path, 'r') as fd:
+-            self.config = yaml.load(fd.read())
++            self.config = yaml.safe_load(fd.read())
+         if self.config is None:
+             self.config = {}
+         try:
+-- 
+2.22.0
+

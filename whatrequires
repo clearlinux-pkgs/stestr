@@ -1,3 +1,9 @@
 # This file contains recursive sources that require this package
+ironic
+keystone
 oslo.upgradecheck
+oslotest
 python-swiftclient
+python-troveclient
+stestr
+tempest
