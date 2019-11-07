@@ -4,7 +4,7 @@
 #
 Name     : stestr
 Version  : 2.3.1
-Release  : 8
+Release  : 10
 URL      : https://files.pythonhosted.org/packages/16/ac/0d72ab15807a33c6a762de3dd29741f73ece6032ad2b4c0466dfbe86a3f6/stestr-2.3.1.tar.gz
 Source0  : https://files.pythonhosted.org/packages/16/ac/0d72ab15807a33c6a762de3dd29741f73ece6032ad2b4c0466dfbe86a3f6/stestr-2.3.1.tar.gz
 Summary  : A parallel Python test runner built around subunit
@@ -37,10 +37,7 @@ BuildRequires : doc8-python
 BuildRequires : fixtures
 BuildRequires : hacking
 BuildRequires : pbr
-BuildRequires : pluggy
 BuildRequires : prettytable
-BuildRequires : py-python
-BuildRequires : pytest
 BuildRequires : python-future
 BuildRequires : python-mock
 BuildRequires : python-mock-python
@@ -50,8 +47,6 @@ BuildRequires : six
 BuildRequires : stestr
 BuildRequires : subunit2sql
 BuildRequires : testtools
-BuildRequires : tox
-BuildRequires : virtualenv
 BuildRequires : voluptuous
 BuildRequires : voluptuous-python
 Patch1: deps.patch
@@ -97,6 +92,7 @@ python3 components for the stestr package.
 
 %prep
 %setup -q -n stestr-2.3.1
+cd %{_builddir}/stestr-2.3.1
 %patch1 -p1
 %patch2 -p1
 
@@ -105,7 +101,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1568191198
+export SOURCE_DATE_EPOCH=1574206775
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
@@ -114,16 +110,11 @@ export CXXFLAGS="$CXXFLAGS -fno-lto "
 export MAKEFLAGS=%{?_smp_mflags}
 python3 setup.py build
 
-%check
-export http_proxy=http://127.0.0.1:9/
-export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost,127.0.0.1,0.0.0.0
-PYTHONPATH=%{buildroot}/usr/lib/python3.7/site-packages python3 setup.py test
 %install
 export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/stestr
-cp LICENSE %{buildroot}/usr/share/package-licenses/stestr/LICENSE
+cp %{_builddir}/stestr-2.3.1/LICENSE %{buildroot}/usr/share/package-licenses/stestr/294b43b2cec9919063be1a3b49e8722648424779
 python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
@@ -138,7 +129,7 @@ echo ----[ mark ]----
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/stestr/LICENSE
+/usr/share/package-licenses/stestr/294b43b2cec9919063be1a3b49e8722648424779
 
 %files python
 %defattr(-,root,root,-)
