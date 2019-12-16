@@ -1,5 +1,5 @@
 PKG_NAME := stestr
-URL = https://files.pythonhosted.org/packages/58/f4/1e378de56e4a6461e01d60bc2506de9869ee47ca9c3891bb2d78d20e3c11/stestr-2.5.1.tar.gz
+URL = https://files.pythonhosted.org/packages/b4/8c/67aec3a38f4653344a49240cd085136a88e095dbad67ebafb540d820700a/stestr-2.6.0.tar.gz
 ARCHIVES = 
 
 include ../common/Makefile.common
