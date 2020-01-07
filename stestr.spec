@@ -4,7 +4,7 @@
 #
 Name     : stestr
 Version  : 2.6.0
-Release  : 12
+Release  : 13
 URL      : https://files.pythonhosted.org/packages/b4/8c/67aec3a38f4653344a49240cd085136a88e095dbad67ebafb540d820700a/stestr-2.6.0.tar.gz
 Source0  : https://files.pythonhosted.org/packages/b4/8c/67aec3a38f4653344a49240cd085136a88e095dbad67ebafb540d820700a/stestr-2.6.0.tar.gz
 Summary  : A parallel Python test runner built around subunit
